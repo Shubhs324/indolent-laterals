@@ -10,7 +10,6 @@ import earthNormal from "../src/assets/earth_bump.jpg"
 import { csvParse, csv, scaleSequentialSqrt, interpolateYlOrRd } from 'd3';
 import countryCodeCSV from "../src/assets/countries.csv"
 import carbonEmissionCSV from "../src/assets/carbon_emission.csv"
-import worldPop from "../src/assets/world_population.csv"
 import CSVReader from './components/CSVReader';
 
 function normalize(min, max) {
