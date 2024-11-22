@@ -12,7 +12,6 @@ import populationCSV from "../../src/assets/population_data.csv"
 import country_geoJson from "../ne_110m_admin_0_countries.geojson?url";
 import parseCSVData from "../helper_functions/functions"
 import HomePage from './HomePage';
-import DataTable from './DataTable';
 
 const Globe3D = () => {
     const [countryCodeData, setCountryCodeData] = useState(new Map());
@@ -29,7 +28,9 @@ const Globe3D = () => {
     const [isEarthDay, setIsEarthDay] = useState(true)
     const [polygonHoverACtive, setPolygonHoverActive] = useState();
     const [isHomePageVisible, setIsHomePageVisible] = useState(true);
+    const [isDataTableVisble, setIsDataTableVisble] = useState(false);
     const [fadeHomePage, setFadeHomePage] = useState(true);
+    const [fadeNotification, setFadeNotification] = useState(false);
     const globeEl = useRef();
 
     const handleIsVisModeDropDownOpen = () => {
@@ -70,20 +71,24 @@ const Globe3D = () => {
     const handleToggleData = (e) => {
         setIsVisDataDropDownOpen(false);
         setIsVisModeDropDownOpen(false);
-        switch(e.target.id){
+        switch (e.target.id) {
             case "carbon_emission":
                 loadCarbonEmissionData().then(d => {
                     setVisualizationData("carbon_emission");
-                    console.log(e.target.id, "is the data being rendered",visData)
+                    console.log(e.target.id, "is the data being rendered", visData)
                 });
                 break;
-                case "world_population":
-                    loadPopulationData().then(d => {
-                        setVisualizationData("world_population");
-                        console.log(e.target.id, "is the data being rendered",visData)
+            case "world_population":
+                loadPopulationData().then(d => {
+                    setVisualizationData("world_population");
+                    console.log(e.target.id, "is the data being rendered", visData)
                 })
                 break;
-
+            default:
+                setFadeNotification(true)
+                setTimeout(() => {
+                    setFadeNotification(false)
+                }, 1400)
         }
         setVisualizationData(e.target.id);
     };
@@ -121,6 +126,10 @@ const Globe3D = () => {
             polygonsData: [],
         })
 
+    };
+
+    const handleDataTableVisibility = (e) => {
+        setIsDataTableVisble(!isDataTableVisble);
     };
 
     const getStartedButton = () => {
@@ -223,7 +232,7 @@ const Globe3D = () => {
                                     emissionMap.push({ lat: data["lat"], lng: data["lng"], data: emission, countryCode: row.COUNTRY, country: data["country"] })
                                 }
                             })
-                            
+
                             globeEl.current.controls().autoRotateSpeed = -0.35;
                             globeEl.current.pointOfView({}, 2000);
 
@@ -436,6 +445,14 @@ const Globe3D = () => {
 
 
                             <div className='w-full px-3 py-3'>
+                                <a onClick={handleDataTableVisibility} className="relative w-full inline-flex items-center justify-center px-5 py-3 overflow-hidden font-mono font-medium tracking-tighter text-white bg-gray-800 rounded-lg group">
+                                    <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-red-500 rounded-full group-hover:w-full group-hover:h-56"></span>
+                                    <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-gray-700"></span>
+                                    <span className="relative text-sm">{isDataTableVisble ? "Hide" : "Show"} Data as Table</span>
+                                </a>
+                            </div>
+
+                            <div className='w-full px-3'>
                                 <a onClick={clearVisualization} className="relative w-full inline-flex items-center justify-center px-5 py-3 overflow-hidden font-mono font-medium tracking-tighter text-white bg-gray-800 rounded-lg group">
                                     <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-red-500 rounded-full group-hover:w-full group-hover:h-56"></span>
                                     <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-gray-700"></span>
@@ -460,7 +477,7 @@ const Globe3D = () => {
 
                 <div className="pointer-events-auto overflow-scroll absolute right-0 top-0 w-2/12 h-full mx-5 px-2 my-2 py-2">
                     {
-                        visData.length > 0 && !isHomePageVisible &&
+                        visData.length > 0 && !isHomePageVisible && isDataTableVisble &&
                         <table className="h-full overflow-scroll backdrop-blur-sm bg-white bg-opacity-50 border border-gray-200">
                             <thead className=''>
                                 <tr>
@@ -491,6 +508,14 @@ const Globe3D = () => {
                         </table>
                     }
                 </div>
+                {
+                    <div className={`select-none transition-opacity duration-1000 ${fadeNotification ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} absolute top-2.5 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mx-2 my-4 text-white text-left`}>
+                        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">Feature not implemented !</strong>
+                        </div>
+
+                    </div>
+                }
                 {/* <CSVReader/> */}
             </div>
         </div>
