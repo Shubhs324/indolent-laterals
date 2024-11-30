@@ -510,8 +510,8 @@ const Globe3D = () => {
                 </div>
                 {
                     <div className={`select-none transition-opacity duration-1000 ${fadeNotification ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} absolute top-2.5 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mx-2 my-4 text-white text-left`}>
-                        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
-                            <strong class="font-bold">Feature not implemented !</strong>
+                        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+                            <strong className="font-bold">Feature not implemented !</strong>
                         </div>
 
                     </div>
